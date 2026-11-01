@@ -1,6 +1,7 @@
 # Arch Linux Install
 
 **Boot the Live Environment**
+
 Boot the environment and select the install via installation medium (this is the ISO image). From here, you will be logged into the virtual console as the root user.
 
 **Verify the Boot Mode**
