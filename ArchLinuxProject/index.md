@@ -5,12 +5,14 @@
 Boot the environment and select the install via installation medium (this is the ISO image). From here, you will be logged into the virtual console as the root user.
 
 **Verify the Boot Mode**
+
 The following command tells us what our boot mode is. My output was "No such file or directory," indicating that we're in BIOS.
 ```
 cat /sys/firmware/efi/fw_platform_size
 ```
 
 **Connect to Internet**
+
 Check if your network interfaces are listed and enabled with the following command. Mine was ens18. Since this is a VM, it will treat its connection as a wired ethernet connection.
 ```
 ip link
@@ -22,17 +24,20 @@ ping ping.archlinux.org
 ```
 
 **Update System Clock**
+
 We need to update the live system's clock. We try the following command, which will sync the time automatically once connected to the internet.
 ```
 timedatectl
 ```
 
 **Disk Partitioning**
+
 This command tells us our block devices.
 ```
 fdisk -l
 ```
 ![Screenshot](images/20261030121855.png)
+
 Ignore loop0 and focus on sda.
 
 "Check that your NVMe drives and Advanced Format hard disk drives are using the [optimal logical sector size](https://wiki.archlinux.org/title/Advanced_Format "Advanced Format") before partitioning."
@@ -65,6 +70,7 @@ w
 ```
 
 **Format Partitions**
+
 Identify existing file systems. Ensure the partitions are unmounted and have no existing filesystem. 
 ```
 lsblk -f
@@ -100,12 +106,14 @@ cat /mnt/etc/fstab
 There are 2 entries for the 2 partitions!
 
 **Chroot**
+
 Go into chroot ( new system environment :) )
 ```
 arch-chroot -S /mnt
 ```
 
 **Time**
+
 Set the proper timezone for the system
 ```
 ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
@@ -113,6 +121,7 @@ hwclock --systohc
 ```
 
 **Localization**
+
 Do this command and delete the # on en_US.UTF-8 UTF-8
 ```
 vim /etc/locale.gen
@@ -127,6 +136,7 @@ echo "LANG=en_US.UTF-8" > /etc/locale.conf
 ```
 
 **Network Configuration**
+
 Assign a system name for our system:
 ```
    echo "quoco" > /etc/hostname
@@ -137,12 +147,14 @@ systemctl enable dhcpcd
 ```
 
 **Root Password**
+
 Set a password:
 ```
 passwd
 ```
 
 **Bootloader Installation**
+
 Grub was already installed during the **Install Essential Packages** step. Now, we do:
 ```
 grub-install --target=i386-pc /dev/sda
@@ -159,11 +171,13 @@ reboot
 ```
 
 **POSTINSTALL**
+
 Install the KDE Plasma DE, konsole for a terminal, dolphin for a file manager, and sddm for a display manager.
 ```
 pacman -S plasma-desktop konsole dolphin sddm
 ```
 ![Screenshot](images/20261031154430.png)
+
 I chose 2.
 For the rest, I chose default configuration.
 
@@ -172,7 +186,7 @@ Verify the installs:
 pacman -Q plasma-desktop konsole dolphin sddm
 ```
 
-QEMU install and activate (VM shows IP). 
+QEMU installation and activation (VM shows IP). 
 ```
 pacman -S qemu-guest-agent
 systemctl start qemu-guest-agent
@@ -184,13 +198,13 @@ useradd -m -G wheel an
 useradd -m -G wheel codi
 ```
 
-set passwords
+Sets the passwords for an and codi.
 ```
 passwd an
 passwd codi
 ```
 
-give sudo permissions to an and codi. This sets vim to the editor for visudo for this single execution. I uncommented the %wheel ALL=(ALL:ALL) ALL line to enable sudo.
+Give sudo permissions to an and codi. This sets vim to the editor for visudo for this single execution. I uncommented the %wheel ALL=(ALL:ALL) ALL line to enable sudo.
 ```
 EDITOR=vim visudo
 ```
@@ -215,6 +229,7 @@ ssh an@192.168.86.98
 ```
 
 **Color Coding**
+
 Set color coding. Diff enables colorized-output, grep enables color highlighting, ls also enables color highlighting. I put the alias commands in ~/.zshrc.
 ```
 alias diff='diff --color=auto'
@@ -269,3 +284,4 @@ I applied the changes with:
 ```
 source ~/.zshrc
 ```
+Thank you for reading!
