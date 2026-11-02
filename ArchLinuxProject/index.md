@@ -246,8 +246,7 @@ prompt -l
 prompt -p 
 prompt fire
 ```
-At first, I only wrote these commands into the console and not into ~/.zshrc, so they wouldn't persist after rebooting. I attempted to write the relevant commands for loading and setting the prompt theme into ~/.zshrc as follows:
-
+At first, I only wrote these (above) commands into the console and not into ~/.zshrc, so they wouldn't persist after rebooting. I attempted to write the relevant commands for loading and setting the prompt theme into ~/.zshrc with vim as follows:
 ```
 autoload -Uz promptinit && promptinit
 prompt fire
