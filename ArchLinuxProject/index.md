@@ -238,7 +238,7 @@ alias ls='ls --color=auto'
 sudo vim /etc/pacman.conf # Uncommented the Color line for colored pacman output
 ```
 
-Additionally, I set a prompt theme! I chose fire.
+Additionally, I set a prompt theme! I chose fire. 
 ```
 autoload -Uz promptinit
 promptinit 
@@ -246,19 +246,23 @@ prompt -l
 prompt -p 
 prompt fire
 ```
+At first, I only wrote these commands into the console and not into ~/.zshrc, so they wouldn't persist after rebooting. I attempted to write the relevant commands for loading and setting the prompt theme into ~/.zshrc as follows:
 
-I accidentally wrote to ./zshrc instead of ~/.zshrc. I realized when I checked the wiki again. I amended it by doing:
+```
+autoload -Uz promptinit && promptinit
+prompt fire
+```
+
+However, I accidentally wrote to ./zshrc instead of ~/.zshrc. I realized when I checked the wiki again, and corrected it by appending ./zshrc to ~/.zshrc and removing ./zshrc:
+
 ```
 cat ./zshrc >> ~/.zshrc
 rm ./zshrc
 ```
 
-I was supposed to do:
+I checked that the contents from ./zshrc appended to ~/.zshrc with:
 ```
 vim ~/.zshrc
-
-autoload -Uz promptinit && promptinit
-prompt fire
 ```
 
 **Set System to Boot Into GUI Environment**
