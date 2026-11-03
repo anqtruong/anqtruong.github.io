@@ -172,7 +172,7 @@ reboot
 
 **POSTINSTALL**
 
-Install the KDE Plasma DE, konsole for a terminal, dolphin for a file manager, and sddm for a display manager.
+Install the KDE Plasma DE, konsole for a terminal, dolphin for a file manager, and sddm for a display manager. I chose KDE Plasma because I searched up "coolest Linux DE's" :D.
 ```
 pacman -S plasma-desktop konsole dolphin sddm
 ```
