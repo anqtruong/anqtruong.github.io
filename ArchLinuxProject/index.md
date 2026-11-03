@@ -282,6 +282,7 @@ The aliases I added in ~/.zshrc were:
 alias ..='cd ..' 
 alias update='sudo pacman -Syu'
 ```
+The aliases are shortform for going back by 1 directory, and updating the system!
 
 I applied the changes with:
 ```
