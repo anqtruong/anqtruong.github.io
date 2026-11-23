@@ -10,32 +10,37 @@ from ISO  DONE
 To snapshot in Proxmox, go to the "Snapshots" page. Select "Take Snapshot", enter the desired name for the snapshot, and save it. The result looks like this:
 ![](Attachments/Pasted%20image%2020261121160106.png)
 
-**Install Docker Engine (Ubuntu)**
+**Install Docker Engine (Ubuntu) (https://docs.docker.com/engine/install/ubuntu/)**
 
+Install CA certificates for HTTPS download verification, as well as curl.
 ```
 sudo apt update && sudo apt install -y ca-certificates curl 
 ```
 
+Create directory for apt to keep third-party signing keys (owner can write, everyone else can read and enter the directory).
 ``` 
 sudo install -m 0755 -d /etc/apt/keyrings  
 ```
 
+Download Docker GPG to verify that downloads are from Docker.
 ```
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
 -o /etc/apt/keyrings/docker.asc  
 ```
 
+Add Docker repo to apt sources.
 ```
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
 https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
 | sudo tee /etc/apt/sources.list.d/docker.list
 ```
 
-Updates the system.
+Refresh packages!
 ```
 sudo apt update  
 ```
 
+Install Docker Engine, Docker CLI, containderd, buildx, and compose.
 ```
 sudo apt install -y docker-ce docker-ce-cli containerd.io \
 docker-buildx-plugin docker-compose-plugin
@@ -80,9 +85,7 @@ I did all my file editing using nvim (Neovim, a text editor).
 
 Install nvim:
 ```
-wget -O vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-sudo apt update
-sudo apt install ./vscode.deb
+sudo apt update && sudo apt install neovim
 ```
 
 **Application**
@@ -112,9 +115,28 @@ Nvim into .env and write GOTIFY_PASS=whatever_password_you_like
 ```
 nvim .env
 ```
-	
+
 Here's the final contents for the compose.yaml:
-![](Attachments/Pasted%20image%2020261122195300.png)
+```
+services:
+  gotify:
+    image: gotify/server
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    environment:
+      GOTIFY_DEFAULTUSER_PASS: ${GOTIFY_PASS}
+    volumes:
+      - './gotify_data:/app/data'
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    restart: unless-stopped
+    volumes:
+      - './uptime-kuma_data:/app/data'
+    ports:
+      # <Host Port>:<Container Port>
+      - '3001:3001'
+```
 
 **Securing the VM**
 
@@ -176,7 +198,7 @@ cd sshd_config.d
 
 Then, we open 50-cloud-init.conf in our text editor and find the second PasswordAuthentication:
 ```
-nvim 50-cloud-init.conf
+sudo nvim 50-cloud-init.conf
 ```
 ![](Attachments/Pasted%20image%2020261122164658.png)
 
@@ -205,6 +227,11 @@ Enable firewall with:
 sudo ufw enable
 ```
 
+See firewall status:
+```
+sudo ufw status
+```
+![](Attachments/Pasted%20image%2020261122203810.png)
 **Unattended Upgrades**
 
 Unattended-upgrades was automatically installed with the ubuntu live-server VM. We can check the 20auto-upgrades file at path /etc/apt/apt.conf.d/20auto-upgrades to see if the unattended upgrade is enabled with nvim or any text editor. I referenced https://ubuntu.com/server/docs/how-to/software/automatic-updates/.
@@ -228,7 +255,23 @@ mkdir backups # create directory for backups
 ```
 
 This is the backup script I wrote:
-![](Attachments/Pasted%20image%2020261122190503.png)
+```
+#!/bin/bash 
+
+docker compose down # Stop the app 
+
+tar -cvf ./backups/$(date +%Y-%m-%d_%H%M%S)_backup.tar ./uptime-kuma_data ./gotify_data # Create the archive, list the associated files, and use the designated file as the archive. 
+#Archives the data for both uptime kuma and gotify into a single archive, with the date as the name. 
+
+docker compose up -d # Start the app 
+
+backups_list=$(ls -t backups/*.tar | tail -n +8) # put the backups that aren't the 7 most recent into backups_list 
+
+for backup in $backups_list; do # loop through the old backups and remove them one at a time 
+	rm "$backup" 
+	echo "$backup successfully removed" 
+done
+```
 
 Before we can execute it, we need to grant execute permissions to the script:
 ```
@@ -242,6 +285,9 @@ sudo ./backup.sh
 
 Successfully auto-removed the old backup!
 ![](Attachments/Pasted%20image%2020261122190356.png)
+
+Here's what the backups directory looks like:
+![](Attachments/Pasted%20image%2020261122204003.png)
 
 **Proxmox Backup**
 Navigate to Proxmox and go to the "Backup" tab for your VM.![](Attachments/Pasted%20image%2020261122190606.png)
@@ -261,7 +307,8 @@ We now have an uptime monitor on our Gotify app.![](Attachments/Pasted%20image%2
 Navigate to Gotify's address:
 ![](Attachments/Pasted%20image%2020261122192902.png)
 
-Select the Apps tab, then select "CREATE APPLICATION". Give it any name, I gave it the name "restore test" since we're testing our restoration. Then, create!![](Attachments/Pasted%20image%2020261122192941.png)
+Select the Apps tab, then select "CREATE APPLICATION". Give it any name, I gave it the name "restore test" since we're testing our restoration. Then, create!
+![](Attachments/Pasted%20image%2020261122203237.png)
 
 Now, to actually do the restore drill:
 
@@ -302,6 +349,18 @@ docker compose up -d
 Both of our applications have been properly restored. Thank you for reading!
 ![](Attachments/Pasted%20image%2020261122194614.png)
 ![](Attachments/Pasted%20image%2020261122194601.png)
+
+**Reboot Test**
+
+![](Attachments/Pasted%20image%2020261122203611.png)
+
+We're going to reboot the system to see if the apps persist after a reboot.
+```
+sudo reboot
+```
+
+The apps are up and running.
+![](Attachments/Pasted%20image%2020261122203714.png)
 
 **Required Screenshots**
 
