@@ -8,7 +8,7 @@ from ISO  DONE
 
 **SNAPSHOT:**
 To snapshot in Proxmox, go to the "Snapshots" page. Select "Take Snapshot", enter the desired name for the snapshot, and save it. The result looks like this:
-![](/Attachments/Pasted%20image%2020261121160106.png)
+![](Attachments/Pasted%20image%2020261121160106.png)
 
 **Install Docker Engine (Ubuntu)**
 
@@ -114,7 +114,7 @@ nvim .env
 ```
 	
 Here's the final contents for the compose.yaml:
-![](/Attachments/Pasted%20image%2020261122195300.png)
+![](Attachments/Pasted%20image%2020261122195300.png)
 
 **Securing the VM**
 
@@ -124,10 +124,10 @@ Run the following (with your desired email inserted) to generate an SSH key-valu
 ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
-You will then be prompted to select a location to save the key. I just press Enter to save to the default location.![](/Attachments/Pasted%20image%2020261122161226.png)
+You will then be prompted to select a location to save the key. I just press Enter to save to the default location.![](Attachments/Pasted%20image%2020261122161226.png)
 
 You will then be prompted to select a passphrase, which acts as a second layer of security on top of your SSH key. I personally left it empty.
-![](/Attachments/Pasted%20image%2020261122161536.png)
+![](Attachments/Pasted%20image%2020261122161536.png)
 
 Your identification and public key saved paths will be displayed in the terminal from this point. Additionally, the key's fingerprint and randomart will be displayed (you don't need to save these).
 
@@ -159,10 +159,10 @@ Once in the editor, the "/" character can be used to search for "PasswordAuthent
 ```
 
 Visual:
-![](/Attachments/Pasted%20image%2020261122160253.png)
+![](Attachments/Pasted%20image%2020261122160253.png)
 
 Once it is found, change the "yes" to a "no".
-![](/Attachments/Pasted%20image%2020261122160403.png)
+![](Attachments/Pasted%20image%2020261122160403.png)
 
 Then, save and exit.
 ```
@@ -178,15 +178,15 @@ Then, we open 50-cloud-init.conf in our text editor and find the second Password
 ```
 nvim 50-cloud-init.conf
 ```
-![](/Attachments/Pasted%20image%2020261122164658.png)
+![](Attachments/Pasted%20image%2020261122164658.png)
 
 We edit yes to no, save, and exit.
 
 Now, when we try to ssh into our VM without a public key, we're denied as expected!
-![](/Attachments/Pasted%20image%2020261122165106.png)
+![](Attachments/Pasted%20image%2020261122165106.png)
 
 Our regular ssh works perfectly.
-![](/Attachments/Pasted%20image%2020261122165214.png)
+![](Attachments/Pasted%20image%2020261122165214.png)
 
 
 **FIREWALL**
@@ -208,7 +208,7 @@ sudo ufw enable
 **Unattended Upgrades**
 
 Unattended-upgrades was automatically installed with the ubuntu live-server VM. We can check the 20auto-upgrades file at path /etc/apt/apt.conf.d/20auto-upgrades to see if the unattended upgrade is enabled with nvim or any text editor. I referenced https://ubuntu.com/server/docs/how-to/software/automatic-updates/.
-![](/Attachments/Pasted%20image%2020261122181810.png)
+![](Attachments/Pasted%20image%2020261122181810.png)
 The '1''s indicate that it is enabled.
 
 **Backups**
@@ -228,7 +228,7 @@ mkdir backups # create directory for backups
 ```
 
 This is the backup script I wrote:
-![](/Attachments/Pasted%20image%2020261122190503.png)
+![](Attachments/Pasted%20image%2020261122190503.png)
 
 Before we can execute it, we need to grant execute permissions to the script:
 ```
@@ -241,32 +241,32 @@ sudo ./backup.sh
 ```
 
 Successfully auto-removed the old backup!
-![](/Attachments/Pasted%20image%2020261122190356.png)
+![](Attachments/Pasted%20image%2020261122190356.png)
 
 **Proxmox Backup**
-Navigate to Proxmox and go to the "Backup" tab for your VM.![](/Attachments/Pasted%20image%2020261122190606.png)
+Navigate to Proxmox and go to the "Backup" tab for your VM.![](Attachments/Pasted%20image%2020261122190606.png)
 
-Then, select "Backup now" and backup.![](/Attachments/Pasted%20image%2020261122190644.png)
+Then, select "Backup now" and backup.![](Attachments/Pasted%20image%2020261122190644.png)
 
 **Restore Drill**
 First, we add something tangible to our apps (Uptime Kuma and Gotify). 
 
 Navigate to Uptime Kuma at its address:
-![](/Attachments/Pasted%20image%2020261122192635.png)
+![](Attachments/Pasted%20image%2020261122192635.png)
 
-On the left, select "Add New Monitor". Then, configure the URL (any URL works, I chose my URL for Gotify), and save at the bottom.![](/Attachments/Pasted%20image%2020261122192752.png)
+On the left, select "Add New Monitor". Then, configure the URL (any URL works, I chose my URL for Gotify), and save at the bottom.![](Attachments/Pasted%20image%2020261122192752.png)
 
-We now have an uptime monitor on our Gotify app.![](/Attachments/Pasted%20image%2020261122193935.png)
+We now have an uptime monitor on our Gotify app.![](Attachments/Pasted%20image%2020261122193935.png)
 
 Navigate to Gotify's address:
-![](/Attachments/Pasted%20image%2020261122192902.png)
+![](Attachments/Pasted%20image%2020261122192902.png)
 
-Select the Apps tab, then select "CREATE APPLICATION". Give it any name, I gave it the name "restore test" since we're testing our restoration. Then, create!![](/Attachments/Pasted%20image%2020261122192941.png)
+Select the Apps tab, then select "CREATE APPLICATION". Give it any name, I gave it the name "restore test" since we're testing our restoration. Then, create!![](Attachments/Pasted%20image%2020261122192941.png)
 
 Now, to actually do the restore drill:
 
 This is what our project directory looks like before:
-![](/Attachments/Pasted%20image%2020261122193330.png)
+![](Attachments/Pasted%20image%2020261122193330.png)
 
 First, we run our script:
 ```
@@ -285,14 +285,14 @@ sudo rm -r uptime-kuma_data
 ```
 
 As we can see, we've deleted the data for Uptime Kuma and Gotify.
-![](/Attachments/Pasted%20image%2020261122193343.png)
+![](Attachments/Pasted%20image%2020261122193343.png)
 
 Now, we restore our archive!
 ```
 ls -t backups/ # list the backups in our backups directory (newest is first)
 sudo tar -xvf ./backups/NameOfBackupHere
 ```
-![](/Attachments/Pasted%20image%2020261122193837.png)
+![](Attachments/Pasted%20image%2020261122193837.png)
 
 Now, we'll start our app again to check if everything was restored properly!
 ```
@@ -300,20 +300,20 @@ docker compose up -d
 ```
 
 Both of our applications have been properly restored. Thank you for reading!
-![](/Attachments/Pasted%20image%2020261122194614.png)
-![](/Attachments/Pasted%20image%2020261122194601.png)
+![](Attachments/Pasted%20image%2020261122194614.png)
+![](Attachments/Pasted%20image%2020261122194601.png)
 
 **Required Screenshots**
 
 **docker compose ps**
-![](/Attachments/Pasted%20image%2020261122194747.png)
+![](Attachments/Pasted%20image%2020261122194747.png)
 
 **App in a browser showing username:**
-![](/Attachments/Pasted%20image%2020261122194836.png)
-![](/Attachments/Pasted%20image%2020261122194902.png)
+![](Attachments/Pasted%20image%2020261122194836.png)
+![](Attachments/Pasted%20image%2020261122194902.png)
 
 **Proxmox Snapshot:**
-![](/Attachments/Pasted%20image%2020261122194937.png)
+![](Attachments/Pasted%20image%2020261122194937.png)
 
 **Promox Backup:**
-![](/Attachments/Pasted%20image%2020261122194951.png)
+![](Attachments/Pasted%20image%2020261122194951.png)
