@@ -1,6 +1,6 @@
 # anqtruong.github.io
 
-Linux noob manually downloads Arch on his homelab
+Linux noob experiments with stuff on his homelab :D
 
 - [Arch Linux Project](ArchLinuxProject/)
 - [Self-Hosted Service Docker Compose Project](DockerProject/)
